@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_todo_app/viewmodels/todo_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create : (_) => TodoViewmodel(),
+      child : const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
