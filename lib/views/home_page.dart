@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             TextField(
+              controller: controller,
               decoration: const InputDecoration(
                 hintText: "Enter Task",
                 border: OutlineInputBorder(),
