@@ -12,7 +12,21 @@ class TodoTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        title: Text(todo.title),
+        leading: Checkbox(
+          value: todo.isCompleted,
+          onChanged: (_) {
+            context.read<TodoViewmodel>().toggleComplete(index);
+          },
+        ),
+        title: Text(
+          todo.title,
+          style: TextStyle(
+            decoration: todo.isCompleted
+                ? TextDecoration.lineThrough
+                : TextDecoration.none,
+          ),
+        ),
+
         trailing: IconButton(
           icon: const Icon(Icons.delete, color: Colors.red),
           onPressed: () {

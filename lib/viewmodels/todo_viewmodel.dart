@@ -15,4 +15,9 @@ class TodoViewmodel extends ChangeNotifier {
     _todos.removeAt(index);
     notifyListeners();
   }
+
+  void toggleComplete(int index) {
+    _todos[index].isCompleted = !_todos[index].isCompleted;
+    notifyListeners();
+  }
 }

@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     final vm = context.watch<TodoViewmodel>();
     return Scaffold(
       appBar: AppBar(title: Text("Todo App")),
-
+      
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
