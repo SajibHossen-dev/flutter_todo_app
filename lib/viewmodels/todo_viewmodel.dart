@@ -6,6 +6,7 @@ class TodoViewmodel extends ChangeNotifier {
   List<TodoModel> get todos => _todos;
 
   void addTodo(String title) {
+     if (title.trim().isEmpty) return;
     _todos.add(
       TodoModel(title: title , isCompleted: false),
       

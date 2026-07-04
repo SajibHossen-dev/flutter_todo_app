@@ -8,8 +8,18 @@ class HomePage extends StatelessWidget {
     return Scaffold(appBar: AppBar(title: Text("Todo App")
     ),
 
-    body: const Center(
-      child: Text("Welcome to todo app"),
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          TextField(
+            decoration: const InputDecoration(
+              hintText: "Enter Task",
+              border: OutlineInputBorder()
+            ),
+          )
+        ],
+      )
     ),
     );
   }
