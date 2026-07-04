@@ -53,7 +53,11 @@ class _HomePageState extends State<HomePage> {
               child: ListView.builder(
                 itemCount: vm.todos.length,
                 itemBuilder : (context , index){
-                  return TodoTitle(todo: vm.todos[index]);
+                  return TodoTitle(
+                    todo: vm.todos[index],
+                    index: index,
+                    
+                    );
                 } 
                 )
               ),
