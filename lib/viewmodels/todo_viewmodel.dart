@@ -20,4 +20,10 @@ class TodoViewmodel extends ChangeNotifier {
     _todos[index].isCompleted = !_todos[index].isCompleted;
     notifyListeners();
   }
+
+  void editTodo(int index, String newTitle) {
+    if (newTitle.trim().isEmpty) return;
+    _todos[index].title = newTitle;
+    notifyListeners();
+  }
 }

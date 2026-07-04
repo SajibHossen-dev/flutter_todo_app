@@ -8,6 +8,38 @@ class TodoTitle extends StatelessWidget {
   final int index;
   const TodoTitle({super.key, required this.todo, required this.index});
 
+  void _showEditDialog(BuildContext context) {
+    final TextEditingController controller = TextEditingController(
+      text: todo.title,
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Edit Task"),
+          content: TextField(controller: controller),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+
+              child: const Text("Cancle"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.read<TodoViewmodel>().editTodo(index, controller.text);
+                Navigator.pop(context);
+              },
+              child: const Text("Save"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -27,11 +59,22 @@ class TodoTitle extends StatelessWidget {
           ),
         ),
 
-        trailing: IconButton(
-          icon: const Icon(Icons.delete, color: Colors.red),
-          onPressed: () {
-            context.read<TodoViewmodel>().deleteTodo(index);
-          },
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: () {
+                context.read<TodoViewmodel>().deleteTodo(index);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                _showEditDialog(context);
+              },
+            ),
+          ],
         ),
       ),
     );
