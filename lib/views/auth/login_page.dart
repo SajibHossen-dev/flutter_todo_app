@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_todo_app/views/auth/register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,24 +15,28 @@ class _LoginPageState extends State<LoginPage> {
   bool obscurePassword = true;
 
   // login function
- void handleLogin() {
-  final email = emailController.text.trim();
-  final password = passwordController.text.trim();
+  void handleLogin() {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
 
-  if (email.isEmpty || password.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Please enter email and password'),
-      ),
-    );
-    return;
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter email and password')),
+      );
+      return;
+    }
+
+    print('Email: $email');
+    print('Password: $password');
+
+    // next api call
   }
 
-  print('Email: $email');
-  print('Password: $password');
-
-  // next api call
-}
+  @override
+  void dispose() {
+    emailController.dispose();
+     super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +58,6 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(height: 40),
-
-              
 
               const SizedBox(height: 8),
 
@@ -93,7 +96,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-
               SizedBox(
                 width: double.infinity,
                 height: 52,
@@ -103,23 +105,24 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-
-              const SizedBox(height: 20,),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Don't have an account",
-                  ),
+                  const Text("Don't have an account?"),
                   TextButton(
-                    onPressed: (){
-
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterPage(),
+                        ),
+                      );
                     },
-                     child: const Text('Register')
-                     
-                     )
+                    child: const Text('Register'),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
