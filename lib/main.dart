@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_todo_app/repositories/todo_repositories.dart';
 import 'package:flutter_todo_app/services/api_service.dart';
 import 'package:flutter_todo_app/viewmodels/todo_viewmodel.dart';
+import 'package:flutter_todo_app/views/auth/login_page.dart';
 import 'package:flutter_todo_app/views/home_page.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Todo App',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }
