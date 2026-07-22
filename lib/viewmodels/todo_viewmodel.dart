@@ -35,11 +35,17 @@ class TodoViewmodel extends ChangeNotifier {
     }
   }
 
+  // create todo
+
   Future<void> addTodo(String title) async {
-    if (title.trim().isEmpty) return;
-    _todos.add(TodoModel(title: title, isCompleted: false));
-    await saveTodos();
-    notifyListeners();
+    try {
+      final newTodo = await repositories.createTodo(title);
+      _todos.add(newTodo);
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
   }
 
   Future<void> deleteTodo(int index) async {
@@ -67,5 +73,4 @@ class TodoViewmodel extends ChangeNotifier {
 
     await presf.setString("todos", jsonEncode(jsonList));
   }
-
 }
