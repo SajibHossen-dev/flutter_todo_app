@@ -2,13 +2,37 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_todo_app/models/todo_model.dart';
+import 'package:flutter_todo_app/repositories/todo_repositories.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TodoViewmodel extends ChangeNotifier {
-  final List<TodoModel> _todos = [];
+  final TodoRepositories repositories;
+  TodoViewmodel(this.repositories);
+
+  List<TodoModel> _todos = [];
+
   List<TodoModel> get todos => _todos;
-  TodoViewmodel() {
-    loadTodos();
+
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
+  // get todos
+  Future<void> loadTodos() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      _todos = await repositories.getTodos();
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> addTodo(String title) async {
@@ -30,9 +54,10 @@ class TodoViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void editTodo(int index, String newTitle) {
+  Future<void> editTodo(int index, String newTitle) async {
     if (newTitle.trim().isEmpty) return;
-    _todos[index].title = newTitle;
+    _todos[index].title = newTitle.trim();
+    await saveTodos();
     notifyListeners();
   }
 
@@ -40,16 +65,7 @@ class TodoViewmodel extends ChangeNotifier {
     final presf = await SharedPreferences.getInstance();
     final jsonList = _todos.map((e) => e.toJson()).toList();
 
-    presf.setString("todos", jsonEncode(jsonList));
+    await presf.setString("todos", jsonEncode(jsonList));
   }
 
-  Future<void> loadTodos() async {
-    final presf = await SharedPreferences.getInstance();
-    final data = presf.getString("todos");
-    if (data == null) return;
-    final List decoded = jsonDecode(data);
-    _todos.clear();
-    _todos.addAll(decoded.map((e) => TodoModel.fromJson(e)));
-    notifyListeners();
-  }
 }
