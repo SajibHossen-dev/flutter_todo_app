@@ -12,6 +12,27 @@ class _LoginPageState extends State<LoginPage> {
   final passwordController = TextEditingController();
 
   bool obscurePassword = true;
+
+  // login function
+ void handleLogin() {
+  final email = emailController.text.trim();
+  final password = passwordController.text.trim();
+
+  if (email.isEmpty || password.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please enter email and password'),
+      ),
+    );
+    return;
+  }
+
+  print('Email: $email');
+  print('Password: $password');
+
+  // next api call
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +53,9 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(height: 40),
-              const Text('Name', style: TextStyle(fontWeight: FontWeight.w600)),
+
+              
+
               const SizedBox(height: 8),
 
               TextField(
@@ -54,9 +77,49 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   hintText: "Enter your password",
                   prefixIcon: Icon(Icons.lock_outline),
-                  suffixIcon: IconButton(onPressed: onPressed, icon: icon)
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        obscurePassword = !obscurePassword;
+                      });
+                    },
+                    icon: Icon(
+                      obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
+
+
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: handleLogin,
+                  child: const Text('Login', style: TextStyle(fontSize: 16)),
+                ),
+              ),
+
+
+              const SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Don't have an account",
+                  ),
+                  TextButton(
+                    onPressed: (){
+
+                    },
+                     child: const Text('Register')
+                     
+                     )
+                ],
+              )
             ],
           ),
         ),
