@@ -8,49 +8,50 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
+
+  void handleRegister() {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
+
+    if (name.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
+      return;
+    }
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('password do not match')));
+      return;
+    }
+    print('Name :$name');
+    print('Email :$email');
+    print('Password :$password');
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final nameController = TextEditingController();
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
-    final confirmPasswordController = TextEditingController();
-    bool obscurePassword = true;
-    bool obscureConfirmPassword = true;
-
-    void handleRegister() {
-      final name = nameController.text.trim();
-      final email = emailController.text.trim();
-      final password = passwordController.text.trim();
-      final confirmPassword = confirmPasswordController.text.trim();
-
-      if (name.isEmpty ||
-          email.isEmpty ||
-          password.isEmpty ||
-          confirmPassword.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please fill aall fields')),
-        );
-        return;
-      }
-      if (password != confirmPassword) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('password do not match')));
-        return;
-      }
-      print('Name :$name');
-      print('Email :$email');
-      print('Password :$password');
-    }
-
-    @override
-    void dispose() {
-      nameController.dispose();
-      emailController.dispose();
-      passwordController.dispose();       
-      confirmPasswordController.dispose();       
-    }
-
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -139,7 +140,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: confirmPasswordController,
                 obscureText: obscureConfirmPassword,
                 decoration: InputDecoration(
-                  hintText: 'Enter you name',
+                  hintText: 'Re-enter the password',
 
                   prefixIcon: const Icon(Icons.lock_outline),
                   suffixIcon: IconButton(
