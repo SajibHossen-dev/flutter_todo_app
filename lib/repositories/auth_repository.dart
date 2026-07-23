@@ -26,6 +26,7 @@ class AuthRepository {
       'user/login',
       data: {'email': email, 'password': password},
     );
-    return response.data['token'];
+    final token = response.data['token'];
+    return token;
   }
 }

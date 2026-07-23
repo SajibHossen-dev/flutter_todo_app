@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todo_app/repositories/auth_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthViewmodel extends ChangeNotifier {
   final AuthRepository repository;
@@ -36,6 +37,12 @@ class AuthViewmodel extends ChangeNotifier {
     notifyListeners();
     try {
       final token = await repository.login(email: email, password: password);
+
+      // save token
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+
       print('login Token :$token');
       return true;
     } catch (e) {
