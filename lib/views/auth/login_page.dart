@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_todo_app/viewmodels/auth_viewmodel.dart';
 import 'package:flutter_todo_app/views/auth/register_page.dart';
+import 'package:flutter_todo_app/views/home_page.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   bool obscurePassword = true;
 
   // login function
-  void handleLogin() {
+  Future<void> handleLogin() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
@@ -29,13 +32,32 @@ class _LoginPageState extends State<LoginPage> {
     print('Email: $email');
     print('Password: $password');
 
-    // next api call
+    //api call
+    final success = await context.read<AuthViewmodel>().login(
+      email: email,
+      password: password,
+    );
+    if (!mounted) return;
+    if (success) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login successful")));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+      );
+    } else {
+      final error = context.read<AuthViewmodel>().errorMessage;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error ?? 'login failed')));
+    }
   }
 
   @override
   void dispose() {
     emailController.dispose();
-     super.dispose();
+    super.dispose();
   }
 
   @override

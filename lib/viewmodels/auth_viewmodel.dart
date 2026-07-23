@@ -29,4 +29,21 @@ class AuthViewmodel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> login({required String email, required String password}) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      final token = await repository.login(email: email, password: password);
+      print('login Token :$token');
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }
