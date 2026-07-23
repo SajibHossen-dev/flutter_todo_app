@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_todo_app/viewmodels/auth_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -15,7 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
 
-  void handleRegister() {
+  Future<void> handleRegister() async {
     final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
@@ -36,9 +38,24 @@ class _RegisterPageState extends State<RegisterPage> {
       ).showSnackBar(const SnackBar(content: Text('password do not match')));
       return;
     }
-    print('Name :$name');
-    print('Email :$email');
-    print('Password :$password');
+
+    final success = await context.read<AuthViewmodel>().register(
+      name: name,
+      email: email,
+      password: password,
+    );
+    if (!mounted) return;
+    if (success) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Registration successful")));
+      Navigator.pop(context);
+    } else {
+      final error = context.read<AuthViewmodel>().errorMessage;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error ?? "Registration failed")));
+    }
   }
 
   @override
@@ -167,8 +184,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: handleRegister,
-                  child: Text('Register', style: TextStyle(fontSize: 30)),
+                  onPressed: context.watch<AuthViewmodel>().isLoading?null : handleRegister,
+                  child:context.watch<AuthViewmodel>().isLoading? const CircularProgressIndicator():const  Text('Register', style: TextStyle(fontSize: 30)),
                 ),
               ),
               const SizedBox(height: 20),

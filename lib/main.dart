@@ -19,15 +19,16 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => AuthViewmodel(authRepository),
           ),
+
         ChangeNotifierProvider(
 
       create: (_) => TodoViewmodel(todoRepositories)..loadTodos(),
-      child: const MyApp(),
+      
 
     ),
-      ]
+      ],
       
-      
+      child: const MyApp(),
       )
     
   );
