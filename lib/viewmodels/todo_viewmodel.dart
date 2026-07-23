@@ -37,14 +37,21 @@ class TodoViewmodel extends ChangeNotifier {
 
   // create todo
 
-  Future<void> addTodo(String title) async {
+  Future<bool> addTodo(String title) async {
+    if (title.trim().isEmpty) {
+      return false;
+    }
+
     try {
-      final newTodo = await repositories.createTodo(title);
-      _todos.add(newTodo);
+      final todo = await repositories.createTodo(title.trim());
+
+      _todos.add(todo);
       notifyListeners();
+      return true;
     } catch (e) {
       _errorMessage = e.toString();
       notifyListeners();
+      return false;
     }
   }
 
