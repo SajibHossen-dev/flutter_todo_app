@@ -26,7 +26,8 @@ class TodoViewmodel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     try {
-      _todos = await repositories.getTodos();
+      final data  = await repositories.getTodos();
+      _todos = data;
     } catch (e) {
       _errorMessage = e.toString();
     } finally {

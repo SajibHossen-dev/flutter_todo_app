@@ -50,6 +50,16 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 15,),
+            // loading 
+            if(vm.isLoading)
+              const CircularProgressIndicator(),
+              // error 
+            if(vm.errorMessage != null)
+              Text(
+                vm.errorMessage!,
+                style: const TextStyle(color:Colors.red),
+              ),
+               const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
                 itemCount: vm.todos.length,
