@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_todo_app/repositories/auth_repository.dart';
 import 'package:flutter_todo_app/repositories/todo_repositories.dart';
 import 'package:flutter_todo_app/services/api_service.dart';
+import 'package:flutter_todo_app/viewmodels/auth_viewmodel.dart';
 import 'package:flutter_todo_app/viewmodels/todo_viewmodel.dart';
 import 'package:flutter_todo_app/views/auth/login_page.dart';
 import 'package:flutter_todo_app/views/home_page.dart';
@@ -9,14 +11,25 @@ import 'package:provider/provider.dart';
 void main() {
   final apiService = ApiService();
   final todoRepositories = TodoRepositories(apiService);
+  final authRepository = AuthRepository(apiService);
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => TodoViewmodel(
-        todoRepositories,
-      )..loadTodos(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => AuthViewmodel(authRepository),
+          ),
+        ChangeNotifierProvider(
+
+      create: (_) => TodoViewmodel(todoRepositories)..loadTodos(),
       child: const MyApp(),
+
     ),
+      ]
+      
+      
+      )
+    
   );
 }
 
