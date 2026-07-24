@@ -37,4 +37,7 @@ class ApiService {
   Future<Response> post(String endpoint, {dynamic data}) async {
     return await dio.post(endpoint, data: data);
   }
+  Future<Response> put(String endpoint, {dynamic data}) async {
+    return await dio.put(endpoint, data: data);
+  }
 }

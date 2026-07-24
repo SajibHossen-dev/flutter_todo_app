@@ -28,9 +28,26 @@ class TodoTitle extends StatelessWidget {
               child: const Text("Cancle"),
             ),
             ElevatedButton(
-              onPressed: () {
-                context.read<TodoViewmodel>().editTodo(index, controller.text);
+              onPressed: () async {
+                final newTodo = controller.text.trim();
+                if (newTodo.isEmpty) {
+                  return;
+                }
+                final success = await context.read<TodoViewmodel>().editTodo(
+                  index,
+                  newTodo,
+                );
+                if (!context.mounted) return;
                 Navigator.pop(context);
+                if (success) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Todo Update Successfully')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Failed to update todo")),
+                  );
+                }
               },
               child: const Text("Save"),
             ),

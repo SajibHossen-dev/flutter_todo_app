@@ -1,21 +1,19 @@
 class TodoModel {
+  String id;
+  String title;
+  bool isCompleted;
 
- String title;
- bool isCompleted;
-
-  TodoModel({
-    
-    required this.title,
-     required this.isCompleted});
+  TodoModel({required this.id,required this.title, required this.isCompleted});
 
   factory TodoModel.fromJson(Map<String, dynamic> json) {
     return TodoModel(
-      
+      id : json['_id'] ??'',
       title: json['title'] ?? '',
-       isCompleted: json['isCompleted'] ??false);
+      isCompleted: json['isCompleted'] ?? false,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    return {'title': title, 'isCompleted': isCompleted};
+    return {'id' : id,'title': title, 'isCompleted': isCompleted};
   }
 }

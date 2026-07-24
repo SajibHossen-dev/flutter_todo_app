@@ -26,7 +26,7 @@ class TodoViewmodel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     try {
-      final data  = await repositories.getTodos();
+      final data = await repositories.getTodos();
       _todos = data;
     } catch (e) {
       _errorMessage = e.toString();
@@ -68,11 +68,26 @@ class TodoViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> editTodo(int index, String newTitle) async {
-    if (newTitle.trim().isEmpty) return;
-    _todos[index].title = newTitle.trim();
-    await saveTodos();
-    notifyListeners();
+  Future<bool> editTodo(int index, String newTitle) async {
+    if (newTitle.trim().isEmpty) {
+      return false;
+    }
+    try {
+      final oldTodo = _todos[index];
+
+      final updateTodo = await repositories.editTodo(
+        oldTodo.id,
+        newTitle.trim(),
+      );
+      
+      _todos[index] = updateTodo;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
   }
 
   Future<void> saveTodos() async {
