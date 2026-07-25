@@ -63,8 +63,14 @@ class TodoTitle extends StatelessWidget {
       child: ListTile(
         leading: Checkbox(
           value: todo.isCompleted,
-          onChanged: (_) {
-            context.read<TodoViewmodel>().toggleComplete(index);
+          onChanged: (_) async {
+          final success =  await context.read<TodoViewmodel>().toggleComplete(index);
+
+            if (!success && context.mounted) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text("Failed to update todo")));
+            }
           },
         ),
         title: Text(

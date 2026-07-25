@@ -22,9 +22,15 @@ class TodoRepositories {
   }
 
   Future<TodoModel> editTodo(String id, String title) async {
+    final response = await apiService.put('todo/$id', data: {'title': title});
+    return TodoModel.fromJson(response.data['todo']);
+  }
+
+  Future<TodoModel> updateCompleted(String id, bool isComleted) async {
     final response = await apiService.put(
-      'todo/$id', data: {'title': title}
-      );
+      'todo/$id',
+      data: {'isCompleted': isComleted},
+    );
     return TodoModel.fromJson(response.data['todo']);
   }
 }

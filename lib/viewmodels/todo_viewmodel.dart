@@ -62,10 +62,22 @@ class TodoViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleComplete(int index) async {
-    _todos[index].isCompleted = !_todos[index].isCompleted;
-    await saveTodos();
-    notifyListeners();
+  Future<bool> toggleComplete(int index) async {
+    try {
+      final oldTodo = _todos[index];
+      final updateTodo = await repositories.updateCompleted(
+        oldTodo.id,
+        !oldTodo.isCompleted,
+      );
+      _todos[index] = updateTodo;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+    
   }
 
   Future<bool> editTodo(int index, String newTitle) async {
@@ -79,7 +91,7 @@ class TodoViewmodel extends ChangeNotifier {
         oldTodo.id,
         newTitle.trim(),
       );
-      
+
       _todos[index] = updateTodo;
       notifyListeners();
       return true;
