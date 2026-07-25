@@ -64,7 +64,9 @@ class TodoTitle extends StatelessWidget {
         leading: Checkbox(
           value: todo.isCompleted,
           onChanged: (_) async {
-          final success =  await context.read<TodoViewmodel>().toggleComplete(index);
+            final success = await context.read<TodoViewmodel>().toggleComplete(
+              index,
+            );
 
             if (!success && context.mounted) {
               ScaffoldMessenger.of(
@@ -87,8 +89,15 @@ class TodoTitle extends StatelessWidget {
           children: [
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () {
-                context.read<TodoViewmodel>().deleteTodo(index);
+              onPressed: () async {
+                final success = await context.read<TodoViewmodel>().deleteTodo(
+                  index,
+                );
+                if (!success && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Failed to delete todo")),
+                  );
+                }
               },
             ),
             IconButton(

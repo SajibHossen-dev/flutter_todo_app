@@ -33,4 +33,9 @@ class TodoRepositories {
     );
     return TodoModel.fromJson(response.data['todo']);
   }
+
+  Future<bool> deleteTodo(String id) async {
+    final response = await apiService.delete('todo/$id');
+    return response.data['success'] == true;
+  }
 }

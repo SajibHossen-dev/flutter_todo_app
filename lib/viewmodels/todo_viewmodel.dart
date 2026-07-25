@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_todo_app/models/todo_model.dart';
 import 'package:flutter_todo_app/repositories/todo_repositories.dart';
+import 'package:flutter_todo_app/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TodoViewmodel extends ChangeNotifier {
@@ -56,10 +57,21 @@ class TodoViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteTodo(int index) async {
-    _todos.removeAt(index);
-    await saveTodos();
-    notifyListeners();
+  Future<bool> deleteTodo(int index) async {
+    try {
+      final todo = _todos[index];
+      final success = await repositories.deleteTodo(todo.id);
+      if (success) {
+        _todos.removeAt(index);
+        notifyListeners();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
   }
 
   Future<bool> toggleComplete(int index) async {
@@ -77,7 +89,6 @@ class TodoViewmodel extends ChangeNotifier {
       notifyListeners();
       return false;
     }
-    
   }
 
   Future<bool> editTodo(int index, String newTitle) async {
@@ -102,10 +113,10 @@ class TodoViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<void> saveTodos() async {
-    final presf = await SharedPreferences.getInstance();
-    final jsonList = _todos.map((e) => e.toJson()).toList();
+  // Future<void> saveTodos() async {
+  //   final presf = await SharedPreferences.getInstance();
+  //   final jsonList = _todos.map((e) => e.toJson()).toList();
 
-    await presf.setString("todos", jsonEncode(jsonList));
-  }
+  //   await presf.setString("todos", jsonEncode(jsonList));
+  // }
 }

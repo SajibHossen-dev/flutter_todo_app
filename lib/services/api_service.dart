@@ -40,4 +40,7 @@ class ApiService {
   Future<Response> put(String endpoint, {dynamic data}) async {
     return await dio.put(endpoint, data: data);
   }
+  Future<Response> delete(String endpoint, {dynamic data}) async {
+    return await dio.delete(endpoint, data: data);
+  }
 }
