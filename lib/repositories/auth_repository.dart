@@ -1,24 +1,26 @@
-
+import 'package:flutter/material.dart';
 import 'package:flutter_todo_app/services/api_service.dart';
 
 class AuthRepository {
   final ApiService apiService;
   AuthRepository(this.apiService);
+
   // register function
-  Future<void> register({
+  Future<Map<String, dynamic>> register({
     required String name,
     required String email,
     required String password,
   }) async {
-    await apiService.post(
+    final response = await apiService.post(
       'user/register',
       data: {'name': name, 'email': email, 'password': password},
     );
+    return Map<String, dynamic>.from(response.data);
   }
 
   // login function
 
-  Future<String> login({
+  Future<Map<String, dynamic>> login({
     required String email,
     required String password,
   }) async {
@@ -26,7 +28,6 @@ class AuthRepository {
       'user/login',
       data: {'email': email, 'password': password},
     );
-    final token = response.data['token'];
-    return token;
+    return Map<String, dynamic>.from(response.data);
   }
 }

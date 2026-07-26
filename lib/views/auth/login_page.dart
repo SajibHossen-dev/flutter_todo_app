@@ -32,31 +32,34 @@ class _LoginPageState extends State<LoginPage> {
     print('Email: $email');
     print('Password: $password');
 
+    final viewModel = context.read<AuthViewmodel>();
+
     //api call
     final success = await context.read<AuthViewmodel>().login(
       email: email,
       password: password,
     );
-    if (!mounted) return;
+    if (!context.mounted) return;
+
     if (success) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Login successful")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(viewModel.successMessage ?? "Login successful")),
+      );
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomePage()),
       );
     } else {
-      final error = context.read<AuthViewmodel>().errorMessage;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error ?? 'login failed')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(viewModel.errorMessage ?? 'login failed')),
+      );
     }
   }
 
   @override
   void dispose() {
     emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
@@ -118,13 +121,24 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: handleLogin,
-                  child: const Text('Login', style: TextStyle(fontSize: 16)),
-                ),
+              Consumer<AuthViewmodel>(
+                builder:(context ,viewModel ,child){
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: viewModel.isLoading ?null : handleLogin, 
+                      child: viewModel.isLoading? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(),
+                      )
+                      :const Text('Login',
+                      style: TextStyle(fontSize: 16),)
+                      ),
+                  );
+                }
+              
               ),
 
               const SizedBox(height: 20),
