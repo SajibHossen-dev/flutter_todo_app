@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+
 import 'package:flutter_todo_app/services/api_service.dart';
 
 class AuthRepository {

@@ -7,7 +7,9 @@ class ApiService {
   ApiService()
     : dio = Dio(
         BaseOptions(
-          baseUrl: 'http://localhost:4000/api/',
+          // baseUrl: 'https://bd-calling-assessment.onrender.com/api/',
+          baseUrl: 'http://10.225.66.14:4000/api/',
+          
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
           headers: {'content-Type': 'application/json'},

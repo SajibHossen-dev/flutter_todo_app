@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_todo_app/models/todo_model.dart';
 import 'package:flutter_todo_app/repositories/todo_repositories.dart';
@@ -21,16 +22,43 @@ class TodoViewmodel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
+  // error message handle
+
+  String _getErrorMessage(Object e) {
+    if (e is DioException) {
+      final data = e.response?.data;
+
+      if (data is Map && data['message'] != null) {
+        return data['message'].toString();
+      }
+
+      // connection timeout
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        return 'Request timeout. Please try again.';
+      }
+      // server not connection
+
+      if (e.type == DioExceptionType.connectionError) {
+        return 'Unable to connect to server';
+      }
+
+      return 'Something went wrong. Please try again';
+    }
+    return 'something went wrong';
+  }
+
   // get todos
   Future<void> loadTodos() async {
     _isLoading = true;
-    _errorMessage = null;
+    _errorMessage = 'Todo title cannot be empty';
     notifyListeners();
     try {
+      _errorMessage = null;
       final data = await repositories.getTodos();
       _todos = data;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = _getErrorMessage(e);
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -51,7 +79,7 @@ class TodoViewmodel extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = _getErrorMessage(e);
       notifyListeners();
       return false;
     }
@@ -59,6 +87,7 @@ class TodoViewmodel extends ChangeNotifier {
 
   Future<bool> deleteTodo(int index) async {
     try {
+      _errorMessage = null;
       final todo = _todos[index];
       final success = await repositories.deleteTodo(todo.id);
       if (success) {
@@ -68,7 +97,7 @@ class TodoViewmodel extends ChangeNotifier {
       }
       return false;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = _getErrorMessage(e);
       notifyListeners();
       return false;
     }
@@ -85,7 +114,7 @@ class TodoViewmodel extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = _getErrorMessage(e);
       notifyListeners();
       return false;
     }
@@ -93,9 +122,12 @@ class TodoViewmodel extends ChangeNotifier {
 
   Future<bool> editTodo(int index, String newTitle) async {
     if (newTitle.trim().isEmpty) {
+      _errorMessage = 'Todo title cannot be empty';
+      notifyListeners();
       return false;
     }
     try {
+      _errorMessage = null;
       final oldTodo = _todos[index];
 
       final updateTodo = await repositories.editTodo(
@@ -107,7 +139,7 @@ class TodoViewmodel extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = _getErrorMessage(e);
       notifyListeners();
       return false;
     }

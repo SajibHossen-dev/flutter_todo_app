@@ -33,19 +33,27 @@ class TodoTitle extends StatelessWidget {
                 if (newTodo.isEmpty) {
                   return;
                 }
+                 final viewModel = context.read<TodoViewmodel>();
                 final success = await context.read<TodoViewmodel>().editTodo(
                   index,
                   newTodo,
                 );
+               
                 if (!context.mounted) return;
+
                 Navigator.pop(context);
+
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Todo Update Successfully')),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Failed to update todo")),
+                    SnackBar(
+                      content: Text(
+                        viewModel.errorMessage ?? "Failed to update todo",
+                      ),
+                    ),
                   );
                 }
               },
@@ -64,6 +72,7 @@ class TodoTitle extends StatelessWidget {
         leading: Checkbox(
           value: todo.isCompleted,
           onChanged: (_) async {
+             final viewModel = context.read<TodoViewmodel>();
             final success = await context.read<TodoViewmodel>().toggleComplete(
               index,
             );
@@ -71,7 +80,7 @@ class TodoTitle extends StatelessWidget {
             if (!success && context.mounted) {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text("Failed to update todo")));
+              ).showSnackBar(SnackBar(content: Text(viewModel.errorMessage??"Failed to update todo")));
             }
           },
         ),
@@ -90,12 +99,13 @@ class TodoTitle extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
               onPressed: () async {
+                 final viewModel = context.read<TodoViewmodel>();
                 final success = await context.read<TodoViewmodel>().deleteTodo(
                   index,
                 );
                 if (!success && context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Failed to delete todo")),
+                    SnackBar(content: Text(viewModel.errorMessage ?? "Failed to delete todo")),
                   );
                 }
               },
